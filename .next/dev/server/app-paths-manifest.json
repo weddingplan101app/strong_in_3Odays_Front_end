@@ -1,0 +1,14 @@
+{
+  "/_not-found/page": "app/_not-found/page.js",
+  "/auth/admin-login/page": "app/auth/admin-login/page.js",
+  "/auth/login/page": "app/auth/login/page.js",
+  "/auth/register/page": "app/auth/register/page.js",
+  "/category/[id]/page": "app/category/[id]/page.js",
+  "/dashboard/analytics/page": "app/dashboard/analytics/page.js",
+  "/dashboard/beginner/page": "app/dashboard/beginner/page.js",
+  "/dashboard/equipment/page": "app/dashboard/equipment/page.js",
+  "/dashboard/page": "app/dashboard/page.js",
+  "/dashboard/settings/page": "app/dashboard/settings/page.js",
+  "/dashboard/video/[id]/page": "app/dashboard/video/[id]/page.js",
+  "/page": "app/page.js"
+}
