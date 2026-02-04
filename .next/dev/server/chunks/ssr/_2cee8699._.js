@@ -644,12 +644,14 @@ const authApi = __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$redux$2f$
                 transformResponse: (response)=>{
                     const user = response?.data?.user ?? response?.user;
                     const token = response?.data?.token ?? response?.token;
+                    const refreshToken = response?.data?.refreshToken ?? response?.refreshToken;
                     return {
                         user: {
                             ...user,
                             role: "admin"
                         },
-                        token
+                        token,
+                        refreshToken
                     };
                 }
             }),
@@ -663,12 +665,14 @@ const authApi = __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$redux$2f$
                 transformResponse: (response)=>{
                     const user = response?.data?.user ?? response?.user;
                     const token = response?.data?.token ?? response?.token;
+                    const refreshToken = response?.data?.refreshToken ?? response?.refreshToken;
                     return {
                         user: {
                             ...user,
                             role: "user"
                         },
-                        token
+                        token,
+                        refreshToken
                     };
                 }
             }),
@@ -677,14 +681,34 @@ const authApi = __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$redux$2f$
                         url: "/auth/register",
                         method: "POST",
                         body: userData
-                    })
+                    }),
+                transformResponse: (response)=>{
+                    const user = response?.data?.user ?? response?.user;
+                    const token = response?.data?.token ?? response?.token;
+                    const refreshToken = response?.data?.refreshToken ?? response?.refreshToken;
+                    return {
+                        user,
+                        token,
+                        refreshToken
+                    };
+                }
             }),
             verifySubscription: builder.mutation({
                 query: (data)=>({
                         url: "/auth/verify-subscription",
                         method: "POST",
                         body: data
-                    })
+                    }),
+                transformResponse: (response)=>{
+                    const user = response?.data?.user ?? response?.user;
+                    const token = response?.data?.token ?? response?.token;
+                    const refreshToken = response?.data?.refreshToken ?? response?.refreshToken;
+                    return {
+                        user,
+                        token,
+                        refreshToken
+                    };
+                }
             }),
             logout: builder.mutation({
                 query: ()=>({

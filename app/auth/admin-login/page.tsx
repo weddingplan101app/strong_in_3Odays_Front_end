@@ -39,7 +39,7 @@ export default function AdminLoginPage() {
         return
       }
 
-      dispatch(setCredentials({ user: response.user, token: response.token }))
+      dispatch(setCredentials({ user: response.user, token: response.token, refreshToken: response.refreshToken }))
 
       toast({
         title: "Admin login successful",

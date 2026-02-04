@@ -43,6 +43,59 @@ interface AdminAnalytics {
   }
 }
 
+interface WeeklyActivityItem {
+  day: string
+  minutes: number
+  calories: number
+}
+
+interface MonthlyProgressItem {
+  week: string
+  minutes: number
+  workouts: number
+}
+
+interface WorkoutCategoryItem {
+  category: string
+  workouts: number
+  percentage: number
+  color: string
+}
+
+interface MostWatchedVideoItem {
+  rank: number
+  title: string
+  category: string
+  views: number
+  color: string
+}
+
+interface AnalyticsDashboardData {
+  analytics: {
+    thisWeek: {
+      minutesTrained: number
+      changeFromLastWeek: string
+      currentStreak: number
+      completionRate: string
+      avgPerDay: number
+      weeklyActivity: WeeklyActivityItem[]
+    }
+    weeklyActivity: WeeklyActivityItem[]
+    monthlyProgress: MonthlyProgressItem[]
+    workoutCategories: WorkoutCategoryItem[]
+    mostWatchedVideos: MostWatchedVideoItem[]
+  }
+  constants: {
+    categories: string[]
+    colors: Record<string, string>
+  }
+}
+
+interface AnalyticsDashboardResponse {
+  success: boolean
+  data: AnalyticsDashboardData
+}
+
 export const analyticsApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getUserAnalytics: builder.query<UserAnalytics, void>({
@@ -61,7 +114,11 @@ export const analyticsApi = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ["Analytics"],
     }),
+    getAnalyticsDashboard: builder.query<AnalyticsDashboardResponse, void>({
+      query: () => "/analytics/dashboard",
+      providesTags: ["Analytics"],
+    }),
   }),
 })
 
-export const { useGetUserAnalyticsQuery, useGetAdminAnalyticsQuery, useLogWorkoutMutation } = analyticsApi
+export const { useGetUserAnalyticsQuery, useGetAdminAnalyticsQuery, useLogWorkoutMutation, useGetAnalyticsDashboardQuery } = analyticsApi

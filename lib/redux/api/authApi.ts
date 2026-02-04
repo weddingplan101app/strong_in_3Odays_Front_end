@@ -23,6 +23,7 @@ interface LoginResponse {
     timezone?: string
   }
   token: string
+  refreshToken?: string
 }
 
 interface RegisterRequest {
@@ -63,7 +64,8 @@ export const authApi = apiSlice.injectEndpoints({
       transformResponse: (response: any) => {
         const user = response?.data?.user ?? response?.user
         const token = response?.data?.token ?? response?.token
-        return { user: { ...user, role: "admin" }, token }
+        const refreshToken = response?.data?.refreshToken ?? response?.refreshToken
+        return { user: { ...user, role: "admin" }, token, refreshToken }
       },
     }),
     loginWithPhone: builder.mutation<LoginResponse, PhoneLoginRequest>({
@@ -76,7 +78,8 @@ export const authApi = apiSlice.injectEndpoints({
       transformResponse: (response: any) => {
         const user = response?.data?.user ?? response?.user
         const token = response?.data?.token ?? response?.token
-        return { user: { ...user, role: "user" }, token }
+        const refreshToken = response?.data?.refreshToken ?? response?.refreshToken
+        return { user: { ...user, role: "user" }, token, refreshToken }
       },
     }),
     register: builder.mutation<LoginResponse, RegisterRequest>({
@@ -85,6 +88,12 @@ export const authApi = apiSlice.injectEndpoints({
         method: "POST",
         body: userData,
       }),
+      transformResponse: (response: any) => {
+        const user = response?.data?.user ?? response?.user
+        const token = response?.data?.token ?? response?.token
+        const refreshToken = response?.data?.refreshToken ?? response?.refreshToken
+        return { user, token, refreshToken }
+      },
     }),
     verifySubscription: builder.mutation<LoginResponse, VerifySubscriptionRequest>({
       query: (data) => ({
@@ -92,6 +101,12 @@ export const authApi = apiSlice.injectEndpoints({
         method: "POST",
         body: data,
       }),
+      transformResponse: (response: any) => {
+        const user = response?.data?.user ?? response?.user
+        const token = response?.data?.token ?? response?.token
+        const refreshToken = response?.data?.refreshToken ?? response?.refreshToken
+        return { user, token, refreshToken }
+      },
     }),
     logout: builder.mutation<void, void>({
       query: () => ({

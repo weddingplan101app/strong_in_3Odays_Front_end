@@ -20,6 +20,7 @@ interface User {
 interface AuthState {
   user: User | null
   token: string | null
+  refreshToken: string | null
   isAuthenticated: boolean
   sessionExpired: boolean
 }
@@ -27,6 +28,7 @@ interface AuthState {
 const initialState: AuthState = {
   user: null,
   token: null,
+  refreshToken: null,
   isAuthenticated: false,
   sessionExpired: false,
 }
@@ -35,15 +37,25 @@ const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    setCredentials: (state, action: PayloadAction<{ user: User; token: string }>) => {
+    setCredentials: (
+      state,
+      action: PayloadAction<{ user: User; token: string; refreshToken?: string }>
+    ) => {
       state.user = action.payload.user
       state.token = action.payload.token
+      state.refreshToken = action.payload.refreshToken ?? state.refreshToken ?? null
       state.isAuthenticated = true
+      state.sessionExpired = false
+    },
+    setTokens: (state, action: PayloadAction<{ token: string; refreshToken?: string }>) => {
+      state.token = action.payload.token
+      state.refreshToken = action.payload.refreshToken ?? state.refreshToken ?? null
       state.sessionExpired = false
     },
     logout: (state) => {
       state.user = null
       state.token = null
+      state.refreshToken = null
       state.isAuthenticated = false
       state.sessionExpired = false
     },
@@ -58,5 +70,5 @@ const authSlice = createSlice({
   },
 })
 
-export const { setCredentials, logout, updateUser, setSessionExpired } = authSlice.actions
+export const { setCredentials, setTokens, logout, updateUser, setSessionExpired } = authSlice.actions
 export default authSlice.reducer
