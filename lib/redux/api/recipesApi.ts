@@ -24,6 +24,25 @@ interface RecipeFilters {
   search?: string
 }
 
+// New: Nutrition Recipes per category (breakfast/lunch/dinner)
+interface NutritionRecipe {
+  id: string
+  title: string
+  description: string
+  imageUrl: string
+  calories: number
+  prepTime: string
+  category: string
+  difficulty: string
+  nutritionFacts: {
+    protein: number | null
+    carbs: number | null
+    fat: number | null
+    fiber: number | null
+  }
+  servings: number
+}
+
 export const recipesApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getRecipes: builder.query<Recipe[], RecipeFilters>({
@@ -36,6 +55,13 @@ export const recipesApi = apiSlice.injectEndpoints({
     getRecipeById: builder.query<Recipe, string>({
       query: (id) => `/recipes/${id}`,
       providesTags: (_result, _error, id) => [{ type: "Recipe", id }],
+    }),
+    // New endpoint: fetch nutrition recipes by category
+    getNutritionRecipesByCategory: builder.query<NutritionRecipe[], "breakfast" | "lunch" | "dinner">({
+      query: (category) => ({ url: `/nutrition/category/${category}` }),
+      transformResponse: (response: { success: boolean; message?: string; data: NutritionRecipe[] } | NutritionRecipe[]) =>
+        (response as any)?.data ?? (response as NutritionRecipe[]),
+      providesTags: ["Recipe"],
     }),
     createRecipe: builder.mutation<Recipe, Partial<Recipe>>({
       query: (data) => ({
@@ -66,6 +92,7 @@ export const recipesApi = apiSlice.injectEndpoints({
 export const {
   useGetRecipesQuery,
   useGetRecipeByIdQuery,
+  useGetNutritionRecipesByCategoryQuery,
   useCreateRecipeMutation,
   useUpdateRecipeMutation,
   useDeleteRecipeMutation,

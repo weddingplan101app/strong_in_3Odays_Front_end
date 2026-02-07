@@ -38,6 +38,8 @@ interface RecipeModalProps {
 export function RecipeModal({ recipe, open, onOpenChange }: RecipeModalProps) {
   if (!recipe) return null
 
+  console.log('recoeee', recipe)
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-4xl max-h-[90vh] p-0 gap-0">
@@ -67,7 +69,7 @@ export function RecipeModal({ recipe, open, onOpenChange }: RecipeModalProps) {
             </DialogHeader>
 
             {/* Quick Stats */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-2 gap-4">
               <div className="flex items-center gap-2 rounded-lg border border-border bg-muted/50 p-3">
                 <Clock className="h-5 w-5 text-primary" />
                 <div>
@@ -103,7 +105,7 @@ export function RecipeModal({ recipe, open, onOpenChange }: RecipeModalProps) {
             {/* Nutrition Info */}
             <div>
               <h3 className="text-lg font-semibold mb-3">Nutrition per Serving</h3>
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+              <div className="grid grid-cols-2 sm:grid-cols-2 gap-3">
                 <div className="rounded-lg border border-border p-3 text-center">
                   <p className="text-2xl font-bold text-primary">{recipe.nutrition.protein}</p>
                   <p className="text-xs text-muted-foreground mt-1">Protein</p>

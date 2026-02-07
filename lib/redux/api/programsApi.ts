@@ -111,6 +111,22 @@ export const programsApi = apiSlice.injectEndpoints({
       transformResponse: (response: ApiResponse<ProgramsResponseData>) => response.data,
       providesTags: ["Program"],
     }),
+    // New: Targeted programs by gender
+    getTargetedProgramsByGender: builder.query<ProgramsResponseData, GenderParam>({
+      query: (gender) => ({
+        url: `/targeted/gender/${gender}`,
+      }),
+      // Support either { success, data } or direct data
+      transformResponse: (response: any) => response?.data ?? response,
+      providesTags: ["Program"],
+    }),
+    // Fetch a targeted workout by id
+    getTargetedWorkoutById: builder.query<TargetedWorkout, string>({
+      query: (id) => ({ url: `/targeted/${id}` }),
+      transformResponse: (response: ApiEnvelope<TargetedWorkout> | TargetedWorkout) =>
+        (response as any)?.data ?? (response as TargetedWorkout),
+      providesTags: (_result, _error, id) => [{ type: "Program", id }],
+    }),
     getWorkoutByProgramAndDay: builder.query<WorkoutResponseData, { programSlug: string; day: number }>({
       query: ({ programSlug, day }) => ({
         url: `/program/${programSlug}/workout/${day}`,
@@ -140,7 +156,52 @@ export const programsApi = apiSlice.injectEndpoints({
 export const {
   useGetBeginnerProgramsByGenderQuery,
   useGetEquipmentProgramsByGenderQuery,
+  // New hook export
+  useGetTargetedProgramsByGenderQuery,
+  useGetTargetedWorkoutByIdQuery,
   useGetWorkoutByProgramAndDayQuery,
   useStartProgramMutation,
   useCompleteProgramMutation,
 } = programsApi
+
+export interface TargetedClip {
+  id: string
+  clipOrder: number
+  title: string
+  exercise: string
+  duration: number
+  videoKey?: string
+  thumbnailUrl?: string | null
+  instructions?: string
+  tips?: string
+  caloriesBurned?: number
+  videoUrl?: string
+}
+
+export interface TargetedWorkout {
+  id: string
+  title: string
+  description?: string
+  totalDuration?: number
+  durationFormatted?: string
+  bodyPart?: string
+  genderTarget?: "male" | "female" | "both"
+  category?: string
+  difficulty?: "beginner" | "intermediate" | "advanced"
+  caloriesBurned?: number
+  clipCount?: number
+  thumbnailUrl?: string
+  equipmentRequired?: boolean
+  focusAreas?: string[]
+  tags?: string[]
+  viewCount?: number
+  rating?: number
+  sortOrder?: number
+  workoutType?: string
+  clips: TargetedClip[]
+}
+
+interface ApiEnvelope<T> {
+  success: boolean
+  data: T
+}

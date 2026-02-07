@@ -3,7 +3,7 @@
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
 import { cn } from "@/lib/utils"
-import { Home, Dumbbell, Target, BookOpen, CreditCard, BarChart3, Settings, LogOut } from "lucide-react"
+import { Home, Dumbbell, Target, BookOpen, CreditCard, BarChart3, Settings, LogOut, PersonStandingIcon } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Logo } from "@/components/logo"
 import { useDispatch } from "react-redux"
@@ -16,8 +16,9 @@ export function DashboardSidebar() {
 
   const navItems = [
     { icon: Home, label: "Overview", href: "/dashboard" },
-    { icon: Dumbbell, label: "Beginner", href: "/dashboard/beginner" },
-    { icon: Target, label: "Equipment", href: "/dashboard/equipment" },
+    { icon: PersonStandingIcon, label: "Beginner", href: "/dashboard/beginner" },
+    { icon: Dumbbell, label: "Equipment", href: "/dashboard/equipment" },
+    { icon: Target, label: "Targeted Workout", href: "/dashboard/targeted" },
     { icon: BookOpen, label: "Recipes", href: "/dashboard/recipes" },
     { icon: CreditCard, label: "Subscription", href: "/dashboard/subscription" },
     { icon: BarChart3, label: "Analytics", href: "/dashboard/analytics" },

@@ -35,6 +35,8 @@ __turbopack_context__.s([
     ()=>setCredentials,
     "setSessionExpired",
     ()=>setSessionExpired,
+    "setTokens",
+    ()=>setTokens,
     "updateUser",
     ()=>updateUser
 ]);
@@ -43,6 +45,7 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$reduxjs$2f
 const initialState = {
     user: null,
     token: null,
+    refreshToken: null,
     isAuthenticated: false,
     sessionExpired: false
 };
@@ -53,12 +56,19 @@ const authSlice = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modul
         setCredentials: (state, action)=>{
             state.user = action.payload.user;
             state.token = action.payload.token;
+            state.refreshToken = action.payload.refreshToken ?? state.refreshToken ?? null;
             state.isAuthenticated = true;
+            state.sessionExpired = false;
+        },
+        setTokens: (state, action)=>{
+            state.token = action.payload.token;
+            state.refreshToken = action.payload.refreshToken ?? state.refreshToken ?? null;
             state.sessionExpired = false;
         },
         logout: (state)=>{
             state.user = null;
             state.token = null;
+            state.refreshToken = null;
             state.isAuthenticated = false;
             state.sessionExpired = false;
         },
@@ -75,7 +85,7 @@ const authSlice = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modul
         }
     }
 });
-const { setCredentials, logout, updateUser, setSessionExpired } = authSlice.actions;
+const { setCredentials, setTokens, logout, updateUser, setSessionExpired } = authSlice.actions;
 const __TURBOPACK__default__export__ = authSlice.reducer;
 }),
 "[project]/lib/redux/api/apiSlice.ts [app-ssr] (ecmascript)", ((__turbopack_context__) => {
@@ -104,14 +114,39 @@ const apiSlice = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_module
                 return headers;
             }
         });
-        const result = await rawBaseQuery(args, api, extraOptions);
-        // Intercept token expiry errors and flag session as expired
+        let result = await rawBaseQuery(args, api, extraOptions);
+        // Intercept token expiry errors and attempt refresh
         if (result.error) {
             const data = result.error.data;
             const status = result.error.status;
             const tokenExpired = data?.code === "TOKEN_EXPIRED" || data?.message?.toLowerCase()?.includes("token expired");
             if (tokenExpired || status === 401) {
-                // Mark session expired and clear token
+                const state = api.getState();
+                const currentRefreshToken = state.auth.refreshToken;
+                if (currentRefreshToken) {
+                    const refreshResult = await rawBaseQuery({
+                        url: "/auth/refresh-token",
+                        method: "POST",
+                        body: {
+                            refreshToken: currentRefreshToken
+                        }
+                    }, api, extraOptions);
+                    if (refreshResult.data) {
+                        const payload = refreshResult.data;
+                        const newAccessToken = payload?.data?.accessToken ?? payload?.accessToken;
+                        const newRefreshToken = payload?.data?.refreshToken ?? payload?.refreshToken;
+                        if (newAccessToken) {
+                            api.dispatch((0, __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$redux$2f$features$2f$auth$2f$authSlice$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["setTokens"])({
+                                token: newAccessToken,
+                                refreshToken: newRefreshToken
+                            }));
+                            // Retry the original request with the new token
+                            result = await rawBaseQuery(args, api, extraOptions);
+                            return result;
+                        }
+                    }
+                }
+                // If refresh failed or no refresh token, mark session as expired
                 api.dispatch((0, __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$redux$2f$features$2f$auth$2f$authSlice$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["setSessionExpired"])(true));
             }
         }
@@ -159,6 +194,7 @@ const authPersistConfig = {
     whitelist: [
         "user",
         "token",
+        "refreshToken",
         "isAuthenticated"
     ]
 };

@@ -5,7 +5,8 @@
   "/dashboard/equipment/page": "app/dashboard/equipment/page.js",
   "/dashboard/page": "app/dashboard/page.js",
   "/dashboard/recipes/page": "app/dashboard/recipes/page.js",
-  "/dashboard/settings/page": "app/dashboard/settings/page.js",
-  "/dashboard/subscription/page": "app/dashboard/subscription/page.js",
+  "/dashboard/targeted/[id]/page": "app/dashboard/targeted/[id]/page.js",
+  "/dashboard/targeted/page": "app/dashboard/targeted/page.js",
+  "/dashboard/video/[id]/page": "app/dashboard/video/[id]/page.js",
   "/page": "app/page.js"
 }

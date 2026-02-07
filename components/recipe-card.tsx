@@ -11,7 +11,7 @@ interface RecipeCardProps {
   difficulty: string
   prepTime: string
   calories: number
-  rating: number
+  rating?: number
   servings: number
   onClick: () => void
 }
@@ -46,10 +46,12 @@ export function RecipeCard({
         </div>
 
         {/* Rating */}
-        <div className="absolute right-3 top-3 flex items-center gap-1 rounded-full bg-black/40 px-2 py-1 backdrop-blur-sm">
-          <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
-          <span className="text-xs font-semibold text-white">{rating}</span>
-        </div>
+        {rating !== undefined && (
+          <div className="absolute right-3 top-3 flex items-center gap-1 rounded-full bg-black/40 px-2 py-1 backdrop-blur-sm">
+            <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
+            <span className="text-xs font-semibold text-white">{rating}</span>
+          </div>
+        )}
 
         {/* Title at bottom */}
         <div className="absolute bottom-0 left-0 right-0 p-4">

@@ -336,6 +336,10 @@ __turbopack_context__.s([
     ()=>useGetBeginnerProgramsByGenderQuery,
     "useGetEquipmentProgramsByGenderQuery",
     ()=>useGetEquipmentProgramsByGenderQuery,
+    "useGetTargetedProgramsByGenderQuery",
+    ()=>useGetTargetedProgramsByGenderQuery,
+    "useGetTargetedWorkoutByIdQuery",
+    ()=>useGetTargetedWorkoutByIdQuery,
     "useGetWorkoutByProgramAndDayQuery",
     ()=>useGetWorkoutByProgramAndDayQuery,
     "useStartProgramMutation",
@@ -369,6 +373,30 @@ const programsApi = __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$redux
                     "Program"
                 ]
             }),
+            // New: Targeted programs by gender
+            getTargetedProgramsByGender: builder.query({
+                query: (gender)=>({
+                        url: `/targeted/gender/${gender}`
+                    }),
+                // Support either { success, data } or direct data
+                transformResponse: (response)=>response?.data ?? response,
+                providesTags: [
+                    "Program"
+                ]
+            }),
+            // Fetch a targeted workout by id
+            getTargetedWorkoutById: builder.query({
+                query: (id)=>({
+                        url: `/targeted/${id}`
+                    }),
+                transformResponse: (response)=>response?.data ?? response,
+                providesTags: (_result, _error, id)=>[
+                        {
+                            type: "Program",
+                            id
+                        }
+                    ]
+            }),
             getWorkoutByProgramAndDay: builder.query({
                 query: ({ programSlug, day })=>({
                         url: `/program/${programSlug}/workout/${day}`
@@ -401,7 +429,8 @@ const programsApi = __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$redux
             })
         })
 });
-const { useGetBeginnerProgramsByGenderQuery, useGetEquipmentProgramsByGenderQuery, useGetWorkoutByProgramAndDayQuery, useStartProgramMutation, useCompleteProgramMutation } = programsApi;
+const { useGetBeginnerProgramsByGenderQuery, useGetEquipmentProgramsByGenderQuery, // New hook export
+useGetTargetedProgramsByGenderQuery, useGetTargetedWorkoutByIdQuery, useGetWorkoutByProgramAndDayQuery, useStartProgramMutation, useCompleteProgramMutation } = programsApi;
 }),
 "[project]/app/dashboard/equipment/page.tsx [app-ssr] (ecmascript)", ((__turbopack_context__) => {
 "use strict";

@@ -1,7 +1,7 @@
 "use client"
 
 import Link from "next/link"
-import { Home, Dumbbell, Weight, Utensils } from "lucide-react"
+import { Home, Dumbbell, Weight, Utensils, PersonStandingIcon } from "lucide-react"
 import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
 
@@ -10,8 +10,8 @@ export function MobileNav() {
 
   const navItems = [
     { icon: Home, label: "Home", href: "/dashboard" },
-    { icon: Dumbbell, label: "Beginner", href: "/dashboard/beginner" },
-    { icon: Weight, label: "Equipment", href: "/dashboard/equipment" },
+    { icon: PersonStandingIcon, label: "Beginner", href: "/dashboard/beginner" },
+    { icon: Dumbbell, label: "Equipment", href: "/dashboard/equipment" },
     { icon: Utensils, label: "Recipe", href: "/dashboard/recipes" },
   ]
 
