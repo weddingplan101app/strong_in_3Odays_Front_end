@@ -13,6 +13,7 @@ import { useAppSelector, useAppDispatch } from "@/lib/redux/hooks"
 import { useGetCurrentUserQuery } from "@/lib/redux/api/authApi"
 import { updateUser } from "@/lib/redux/features/auth/authSlice"
 import { useGetDashboardOverviewQuery } from "@/lib/redux/api/usersApi"
+import { useGetNutritionRecipesByCategoryQuery, useGetRecipesQuery } from "@/lib/redux/api/recipesApi"
 
 export default function DashboardPage() {
   const continueWatching = [
@@ -48,94 +49,14 @@ export default function DashboardPage() {
     },
   ]
 
-  const recommendedRecipes = [
-    {
-      id: "r1",
-      title: "Protein Pancakes",
-      image: "/protein-pancakes-with-banana-and-honey.jpg",
-      difficulty: "Easy",
-      prepTime: "15 mins",
-      calories: 320,
-      rating: 4.8,
-      servings: 2,
-      description:
-        "Fluffy protein-packed pancakes made with banana and topped with honey. Perfect post-workout breakfast!",
-      nutrition: { protein: 28, carbs: 42, fats: 8, fiber: 4 },
-      ingredients: [
-        "2 scoops vanilla protein powder",
-        "1 ripe banana, mashed",
-        "2 eggs",
-        "1/4 cup oat flour",
-        "1 tsp baking powder",
-        "Honey for topping",
-      ],
-      instructions: [
-        "Mix protein powder, mashed banana, and eggs in a bowl",
-        "Add oat flour and baking powder, mix until smooth",
-        "Heat a non-stick pan over medium heat",
-        "Pour batter to form pancakes, cook 2-3 minutes per side",
-        "Serve hot with honey drizzle",
-      ],
-    },
-    {
-      id: "r4",
-      title: "Healthy Jollof Rice",
-      image: "/healthy-nigerian-jollof-rice-with-vegetables.jpg",
-      difficulty: "Medium",
-      prepTime: "45 mins",
-      calories: 380,
-      rating: 4.9,
-      servings: 4,
-      description: "A healthier take on the classic Nigerian favorite, packed with vegetables and lean protein.",
-      nutrition: { protein: 18, carbs: 52, fats: 12, fiber: 6 },
-      ingredients: [
-        "2 cups brown rice",
-        "400g tomato sauce",
-        "2 bell peppers, diced",
-        "1 onion, chopped",
-        "Mixed vegetables (carrots, peas)",
-        "Chicken or turkey pieces",
-        "Spices (curry, thyme, bay leaves)",
-      ],
-      instructions: [
-        "Blend tomatoes, peppers, and onions into a smooth paste",
-        "Season and cook chicken pieces until done, set aside",
-        "Fry tomato paste until oil rises to the top",
-        "Add brown rice and stock, bring to a boil",
-        "Reduce heat, add vegetables and chicken, cover and simmer for 30 minutes",
-      ],
-    },
-    {
-      id: "r5",
-      title: "Grilled Chicken Salad",
-      image: "/grilled-chicken-salad.png",
-      difficulty: "Easy",
-      prepTime: "20 mins",
-      calories: 290,
-      rating: 4.6,
-      servings: 2,
-      description: "Fresh garden salad with perfectly grilled chicken breast, packed with nutrients and flavor.",
-      nutrition: { protein: 32, carbs: 18, fats: 10, fiber: 5 },
-      ingredients: [
-        "200g chicken breast",
-        "Mixed greens (lettuce, spinach, arugula)",
-        "Cherry tomatoes",
-        "Cucumber, sliced",
-        "Red onion, thinly sliced",
-        "Olive oil and lemon dressing",
-      ],
-      instructions: [
-        "Season chicken breast with salt, pepper, and herbs",
-        "Grill chicken for 6-7 minutes per side until cooked through",
-        "Wash and prepare all vegetables",
-        "Arrange greens on a plate, add vegetables",
-        "Slice grilled chicken and place on top",
-        "Drizzle with olive oil and lemon dressing",
-      ],
-    },
-  ]
 
-  const [selectedRecipe, setSelectedRecipe] = useState<(typeof recommendedRecipes)[0] | null>(null)
+  const [selectedRecipe, setSelectedRecipe] = useState<DashboardRecipe | null>(null)
+
+  // Fetch Fuel Your Fitness recipes via API (show only three)
+  const { data: breakfastData, isLoading: recipesLoading } = useGetRecipesQuery({})
+  console.log('dhfj', breakfastData)
+  const apiRecipes: DashboardRecipe[] = useMemo(() => (breakfastData?.data ?? []).map(mapNutritionRecipe), [breakfastData])
+  const topThreeRecipes = useMemo(() => apiRecipes.slice(0, 3), [apiRecipes])
 
   const dispatch = useAppDispatch()
   const { user, token } = useAppSelector((state) => state.auth)
@@ -288,20 +209,28 @@ export default function DashboardPage() {
         <h2 className="text-xl font-bold mb-4 text-foreground">Fuel Your Fitness</h2>
         <p className="text-sm text-muted-foreground mb-4">Healthy recipes to complement your workout routine</p>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {recommendedRecipes.map((recipe) => (
-            <RecipeCard
-              key={recipe.id}
-              id={recipe.id}
-              title={recipe.title}
-              image={recipe.image}
-              difficulty={recipe.difficulty}
-              prepTime={recipe.prepTime}
-              calories={recipe.calories}
-              rating={recipe.rating}
-              servings={recipe.servings}
-              onClick={() => setSelectedRecipe(recipe)}
-            />
-          ))}
+          {recipesLoading ? (
+            <p className="text-sm text-muted-foreground">Loading recipes...</p>
+          ) : topThreeRecipes.length ? (
+            topThreeRecipes.map((recipe) => (
+              <RecipeCard
+                key={recipe.id}
+                id={recipe.id}
+                title={recipe.title}
+                image={recipe.image}
+                difficulty={recipe.difficulty}
+                prepTime={recipe.prepTime}
+                calories={recipe.calories}
+                rating={recipe.rating}
+                servings={recipe.servings}
+                onClick={() => setSelectedRecipe(recipe)}
+              />
+            ))
+          ) : (
+            <Card className="p-6">
+              <p className="text-muted-foreground">No recipes found. Check back later.</p>
+            </Card>
+          )}
         </div>
       </div>
 
@@ -327,4 +256,76 @@ export default function DashboardPage() {
       )}
     </div>
   )
+}
+
+// Helper types and mapping for Fuel Your Fitness recipes
+interface DashboardRecipe {
+  id: string
+  title: string
+  image: string
+  difficulty: string
+  prepTime: string
+  calories: number
+  rating?: number
+  servings: number
+  description: string
+  nutrition: {
+    protein: string
+    carbs: string
+    fats: string
+    fiber: string
+  }
+  ingredients: string[]
+  instructions: string[]
+}
+
+interface NutritionRecipe {
+  id: string
+  title: string
+  description: string
+  imageUrl: string
+  calories: number
+  prepTime: string
+  category: string
+  difficulty: string
+  nutritionFacts: {
+    protein: number | null
+    carbs: number | null
+    fat: number | null
+    fiber: number | null
+  }
+  servings: number
+}
+
+// Safe image URL
+const sanitizeImageUrl = (url?: string) => {
+  if (!url || typeof url !== "string") return "/placeholder.svg"
+  return url.startsWith("http") || url.startsWith("/") ? url : `/${url}`
+}
+
+const toGramString = (value?: number | null) => {
+  if (value === null || value === undefined) return "-"
+  const rounded = Math.round(value)
+  return `${rounded}g`
+}
+
+function mapNutritionRecipe(item: NutritionRecipe): DashboardRecipe {
+  return {
+    id: item.id,
+    title: item.title,
+    image: sanitizeImageUrl(item.imageUrl),
+    difficulty: item.difficulty ?? "",
+    prepTime: item.prepTime ?? "-",
+    calories: item.calories ?? 0,
+    servings: item.servings ?? 1,
+    description: item.description ?? "",
+    nutrition: {
+      protein: toGramString(item.nutritionFacts?.protein),
+      carbs: toGramString(item.nutritionFacts?.carbs),
+      fats: toGramString(item.nutritionFacts?.fat),
+      fiber: toGramString(item.nutritionFacts?.fiber),
+    },
+    ingredients: [],
+    instructions: [],
+  }
 }

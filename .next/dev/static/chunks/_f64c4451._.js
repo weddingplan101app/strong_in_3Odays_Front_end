@@ -1241,7 +1241,7 @@ const recipesApi = __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$redux$
     endpoints: (builder)=>({
             getRecipes: builder.query({
                 query: (filters)=>({
-                        url: "/recipes",
+                        url: "/nutrition/recipes",
                         params: filters
                     }),
                 providesTags: [

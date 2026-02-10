@@ -5,21 +5,6 @@
       "static/media/8c2eb9ceedecfc8e-s.p.21935807.woff2",
       "static/media/83afe278b6a6bb3c-s.p.3a6ba036.woff2"
     ],
-    "[project]/app/dashboard/analytics/page": [
-      "static/media/797e433ab948586e-s.p.dbea232f.woff2",
-      "static/media/8c2eb9ceedecfc8e-s.p.21935807.woff2",
-      "static/media/83afe278b6a6bb3c-s.p.3a6ba036.woff2"
-    ],
-    "[project]/app/dashboard/beginner/page": [
-      "static/media/797e433ab948586e-s.p.dbea232f.woff2",
-      "static/media/8c2eb9ceedecfc8e-s.p.21935807.woff2",
-      "static/media/83afe278b6a6bb3c-s.p.3a6ba036.woff2"
-    ],
-    "[project]/app/dashboard/equipment/page": [
-      "static/media/797e433ab948586e-s.p.dbea232f.woff2",
-      "static/media/8c2eb9ceedecfc8e-s.p.21935807.woff2",
-      "static/media/83afe278b6a6bb3c-s.p.3a6ba036.woff2"
-    ],
     "[project]/app/dashboard/page": [
       "static/media/797e433ab948586e-s.p.dbea232f.woff2",
       "static/media/8c2eb9ceedecfc8e-s.p.21935807.woff2",
@@ -30,17 +15,17 @@
       "static/media/8c2eb9ceedecfc8e-s.p.21935807.woff2",
       "static/media/83afe278b6a6bb3c-s.p.3a6ba036.woff2"
     ],
-    "[project]/app/dashboard/targeted/[id]/page": [
+    "[project]/app/dashboard/settings/page": [
+      "static/media/797e433ab948586e-s.p.dbea232f.woff2",
+      "static/media/8c2eb9ceedecfc8e-s.p.21935807.woff2",
+      "static/media/83afe278b6a6bb3c-s.p.3a6ba036.woff2"
+    ],
+    "[project]/app/dashboard/subscription/page": [
       "static/media/797e433ab948586e-s.p.dbea232f.woff2",
       "static/media/8c2eb9ceedecfc8e-s.p.21935807.woff2",
       "static/media/83afe278b6a6bb3c-s.p.3a6ba036.woff2"
     ],
     "[project]/app/dashboard/targeted/page": [
-      "static/media/797e433ab948586e-s.p.dbea232f.woff2",
-      "static/media/8c2eb9ceedecfc8e-s.p.21935807.woff2",
-      "static/media/83afe278b6a6bb3c-s.p.3a6ba036.woff2"
-    ],
-    "[project]/app/dashboard/video/[id]/page": [
       "static/media/797e433ab948586e-s.p.dbea232f.woff2",
       "static/media/8c2eb9ceedecfc8e-s.p.21935807.woff2",
       "static/media/83afe278b6a6bb3c-s.p.3a6ba036.woff2"

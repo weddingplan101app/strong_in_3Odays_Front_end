@@ -47,7 +47,7 @@ export const recipesApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getRecipes: builder.query<Recipe[], RecipeFilters>({
       query: (filters) => ({
-        url: "/recipes",
+        url: "/nutrition/recipes",
         params: filters,
       }),
       providesTags: ["Recipe"],
