@@ -1,7 +1,7 @@
 "use client"
 
 import Link from "next/link"
-import { LayoutDashboard, Users, Video, FolderTree } from "lucide-react"
+import { LayoutDashboard, Users, Video, FolderTree, BookOpen } from "lucide-react"
 import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
 
@@ -11,8 +11,8 @@ export function AdminMobileNav() {
   const navItems = [
     { icon: LayoutDashboard, label: "Overview", href: "/admin" },
     { icon: Users, label: "Users", href: "/admin/users" },
+    { icon: BookOpen, label: "Programs", href: "/admin/programs" },
     { icon: Video, label: "Videos", href: "/admin/videos" },
-    { icon: FolderTree, label: "Categories", href: "/admin/categories" },
   ]
 
   return (

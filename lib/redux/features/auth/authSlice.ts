@@ -5,7 +5,8 @@ interface User {
   email: string
   name: string
   phone?: string
-  role: "user" | "admin"
+  role: "user" | "admin" | "super_admin"
+  permissions?: string[]
   subscriptionStatus?: "active" | "inactive" | "expired"
   subscriptionPlan?: "daily" | "weekly" | "monthly"
   avatar?: string
@@ -23,6 +24,7 @@ interface AuthState {
   refreshToken: string | null
   isAuthenticated: boolean
   sessionExpired: boolean
+  permissions: string[]
 }
 
 const initialState: AuthState = {
@@ -31,6 +33,7 @@ const initialState: AuthState = {
   refreshToken: null,
   isAuthenticated: false,
   sessionExpired: false,
+  permissions: [],
 }
 
 const authSlice = createSlice({
@@ -39,13 +42,14 @@ const authSlice = createSlice({
   reducers: {
     setCredentials: (
       state,
-      action: PayloadAction<{ user: User; token: string; refreshToken?: string }>
+      action: PayloadAction<{ user: User; token: string; refreshToken?: string; permissions?: string[] }>
     ) => {
       state.user = action.payload.user
       state.token = action.payload.token
       state.refreshToken = action.payload.refreshToken ?? state.refreshToken ?? null
       state.isAuthenticated = true
       state.sessionExpired = false
+      state.permissions = action.payload.permissions ?? action.payload.user.permissions ?? []
     },
     setTokens: (state, action: PayloadAction<{ token: string; refreshToken?: string }>) => {
       state.token = action.payload.token
@@ -58,6 +62,7 @@ const authSlice = createSlice({
       state.refreshToken = null
       state.isAuthenticated = false
       state.sessionExpired = false
+      state.permissions = []
     },
     updateUser: (state, action: PayloadAction<Partial<User>>) => {
       if (state.user) {

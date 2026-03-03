@@ -28,7 +28,7 @@ export default function LoginPage() {
 
     try {
       const response = await loginWithPhone({ phone }).unwrap()
-      dispatch(setCredentials({ user: response.user, token: response.token, refreshToken: response.refreshToken }))
+      dispatch(setCredentials({ user: response.user, token: response.token }))
 
       toast({
         title: "Login successful",

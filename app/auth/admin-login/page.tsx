@@ -11,7 +11,7 @@ import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { ArrowLeft, Shield } from "lucide-react"
 import { useAppDispatch } from "@/lib/redux/hooks"
-import { useLoginMutation } from "@/lib/redux/api/authApi"
+import { useAdminLoginMutation } from "@/lib/redux/api/authApi"
 import { setCredentials } from "@/lib/redux/features/auth/authSlice"
 import { useToast } from "@/hooks/use-toast"
 
@@ -21,36 +21,42 @@ export default function AdminLoginPage() {
   const { toast } = useToast()
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
-  const [login, { isLoading }] = useLoginMutation()
+  const [username, setUsername] = useState("")
+  const [adminLogin, { isLoading }] = useAdminLoginMutation()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
     try {
-      const response = await login({ email, password }).unwrap()
+      const response = await adminLogin({ email, password, username }).unwrap()
 
-      // Check if user is admin
-      if (response.user.role !== "admin") {
-        toast({
-          title: "Access denied",
-          description: "You don't have admin privileges",
-          variant: "destructive",
-        })
-        return
-      }
-
-      dispatch(setCredentials({ user: response.user, token: response.token, refreshToken: response.refreshToken }))
+      dispatch(
+        setCredentials({
+          user: response.user,
+          token: response.token,
+          permissions: response.permissions,
+        }),
+      )
 
       toast({
         title: "Admin login successful",
-        description: "Welcome to the admin dashboard!",
+        description: `Welcome back, ${response.user.name}!`,
       })
+
+      if (response.requiresPasswordChange) {
+        // You might want to redirect to a password change page
+        toast({
+          title: "Password Change Required",
+          description: "Please change your password for security reasons.",
+          variant: "default",
+        })
+      }
 
       router.push("/admin")
     } catch (error: any) {
       toast({
         title: "Login failed",
-        description: error?.data?.message || "Invalid email or password",
+        description: error?.data?.message || "Invalid credentials",
         variant: "destructive",
       })
     }
@@ -82,11 +88,22 @@ export default function AdminLoginPage() {
           <form onSubmit={handleSubmit}>
             <CardContent className="space-y-4">
               <div className="space-y-2">
+                <Label htmlFor="username">Username</Label>
+                <Input
+                  id="username"
+                  type="text"
+                  placeholder="superadmin"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  required
+                />
+              </div>
+              <div className="space-y-2">
                 <Label htmlFor="email">Email</Label>
                 <Input
                   id="email"
                   type="email"
-                  placeholder="admin@strong30.com"
+                  placeholder="admin@strongin30days.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required

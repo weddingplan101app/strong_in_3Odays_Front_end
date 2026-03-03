@@ -3,7 +3,7 @@
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
-import { LayoutDashboard, Users, CreditCard, Video, FolderTree, BarChart3, Settings, LogOut } from "lucide-react"
+import { LayoutDashboard, Users, CreditCard, Video, FolderTree, BarChart3, Settings, LogOut, BookOpen } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Logo } from "@/components/logo"
 
@@ -13,6 +13,7 @@ export function AdminSidebar() {
   const navItems = [
     { icon: LayoutDashboard, label: "Overview", href: "/admin" },
     { icon: Users, label: "Users", href: "/admin/users" },
+    { icon: BookOpen, label: "Programs", href: "/admin/programs" },
     { icon: CreditCard, label: "Subscriptions", href: "/admin/subscriptions" },
     { icon: Video, label: "Videos", href: "/admin/videos" },
     { icon: FolderTree, label: "Categories", href: "/admin/categories" },

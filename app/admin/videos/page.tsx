@@ -124,15 +124,11 @@ export default function VideosPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-foreground mb-2">Videos</h1>
-          <p className="text-muted-foreground">Manage workout videos</p>
+          <h1 className="text-3xl font-bold text-foreground">Videos</h1>
+          <p className="text-muted-foreground">Manage and monitor all workout videos</p>
         </div>
-        <Button onClick={() => setUploadModalOpen(true)}>
-          <Upload className="w-4 h-4 mr-2" />
-          Upload Video
-        </Button>
       </div>
 
       <Card>

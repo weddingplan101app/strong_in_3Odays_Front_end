@@ -5,13 +5,20 @@ interface LoginRequest {
   password: string
 }
 
+interface AdminLoginRequest {
+  email: string
+  password: string
+  username: string
+}
+
 interface LoginResponse {
   user: {
     id: string
     email: string
     name: string
     phone?: string
-    role: "user" | "admin"
+    role: "user" | "admin" | "super_admin"
+    permissions?: string[]
     subscriptionStatus?: "active" | "inactive" | "expired"
     subscriptionPlan?: "daily" | "weekly" | "monthly"
     avatar?: string
@@ -24,6 +31,8 @@ interface LoginResponse {
   }
   token: string
   refreshToken?: string
+  requiresPasswordChange?: boolean
+  permissions?: string[]
 }
 
 interface RegisterRequest {
@@ -54,6 +63,31 @@ interface UpdateProfileRequest {
 export const authApi = apiSlice.injectEndpoints({
   overrideExisting: true,
   endpoints: (builder) => ({
+    adminLogin: builder.mutation<LoginResponse, AdminLoginRequest>({
+      query: (credentials) => ({
+        url: "/admin/login",
+        method: "POST",
+        body: credentials,
+      }),
+      // Map backend response and attach admin role by default
+      transformResponse: (response: any) => {
+        const admin = response?.data?.admin
+        const token = response?.data?.token
+        const permissions = response?.data?.permissions
+        const requiresPasswordChange = response?.data?.requiresPasswordChange
+
+        return {
+          user: {
+            ...admin,
+            role: admin?.role || "admin",
+            name: admin?.name || admin?.username,
+          },
+          token,
+          permissions,
+          requiresPasswordChange,
+        }
+      },
+    }),
     login: builder.mutation<LoginResponse, LoginRequest>({
       query: (credentials) => ({
         url: "/auth/admin/login",
@@ -227,6 +261,7 @@ export const authApi = apiSlice.injectEndpoints({
 })
 
 export const {
+  useAdminLoginMutation,
   useLoginMutation,
   useLoginWithPhoneMutation,
   useRegisterMutation,

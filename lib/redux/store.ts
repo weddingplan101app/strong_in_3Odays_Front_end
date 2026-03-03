@@ -8,7 +8,7 @@ import { persistReducer, persistStore, FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, 
 const authPersistConfig = {
   key: "auth",
   storage,
-  whitelist: ["user", "token", "refreshToken", "isAuthenticated"],
+  whitelist: ["user", "token", "isAuthenticated"],
 }
 
 const persistedAuthReducer = persistReducer(authPersistConfig, authReducer)
